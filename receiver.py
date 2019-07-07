@@ -105,23 +105,23 @@ class Receiver:
         """Connects to the actual QLXD receiver, sends commands, and received responses.
         Poller should be run inside of a thread, one for each receiver."""
 
-        #try:
-        # Connect to receiver
-        sock = socket(AF_INET, SOCK_STREAM)
-        sock.connect((self.ip, self.port))
+        try:
+            # Connect to receiver
+            sock = socket(AF_INET, SOCK_STREAM)
+            sock.connect((self.ip, self.port))
 
-        # Send command strings to start metering and get all information
-        sock.send(b"< SET 1 METER_RATE 00200 >")
-        sock.send(b"< GET 1 ALL >")
-        print(BLUE + "Listening to receiver at", self.ip + ENDC)
+            # Send command strings to start metering and get all information
+            sock.send(b"< SET 1 METER_RATE 00200 >")
+            sock.send(b"< GET 1 ALL >")
+            print(BLUE + "Listening to receiver at", self.ip + ENDC)
 
-        # Wait for responses and call parser each time there is a response.
-        while True:
-            data = sock.recv(1024)
-            self.parser(str(data))
+            # Wait for responses and call parser each time there is a response.
+            while True:
+                data = sock.recv(1024)
+                self.parser(str(data))
 
-        #except:
-            #print(RED + "Connection to", self.ip, "has failed permanently!" + ENDC)
+        except:
+            print(RED + "Connection to", self.ip, "has failed permanently!" + ENDC)
 
     def blinker(self, color_message):
         while True:
