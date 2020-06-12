@@ -3,8 +3,8 @@ from console import *
 import threading
 
 
-RX_IP_LIST = ["192.168.10.125", "192.168.10.126"]
-CONSOLE_IP = "192.168.10.12"
+RX_IP_LIST = ["192.168.10.51", "192.168.10.52", "192.168.10.53", "192.168.10.54"]
+CONSOLE_IP = "192.168.10.13"
 
 
 # Setup console connection and poll for all channel names

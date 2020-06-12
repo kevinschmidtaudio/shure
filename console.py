@@ -1,7 +1,6 @@
 from oscpy.server import OSCThreadServer
 from socket import *
 from time import sleep
-from config import *
 
 
 def two_digits(ch):
@@ -28,7 +27,7 @@ class Console:
         self.server = OSCThreadServer(advanced_matching=True)
         self.sock = self.server.listen(address=local_ip, port=0, default=True)
         self.server.bind(b"/ch/../config/name", self.callback, sock=self.sock, get_address=True)
-        print(BLUE + "Listening to console at", self.console_ip + ENDC)
+        print("Listening to console at", self.console_ip)
 
         # Query for all channel names
         for ch in range(1, 33):
@@ -44,9 +43,19 @@ class Console:
         # Extract channel name string
         values = str(values)
         name = values[2: -1]
+
+        # Find if there are battery bars in the name and remove.
         batt_indicator = name.find(" (")
         if batt_indicator > -1:
             name = name[:batt_indicator]
+            value = bytes(name, 'utf-8')
+            name_message = "/ch/" + two_digits(channel) + "/config/name"
+            self.message(name_message, value)
+
+        # Find if there are h:mm in the name and remove.
+        batt_indicator = name.find(":")
+        if batt_indicator > -1:
+            name = name[:batt_indicator - 2]
             value = bytes(name, 'utf-8')
             name_message = "/ch/" + two_digits(channel) + "/config/name"
             self.message(name_message, value)
@@ -82,4 +91,4 @@ class Console:
         dups = list(set(dups))
         dups.sort()
         if len(dups) > 1:
-            print(YELLOW + 'Warning: Duplicate channel name!  Channels ' + str(dups)[1:-1] + ' = ' + self.name_list[ch - 1] + ENDC)
+            print('Warning: Duplicate channel name!  Channels ' + str(dups)[1:-1] + ' = ' + self.name_list[ch - 1])
